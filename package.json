@@ -1,0 +1,35 @@
+{
+  "name": "zoom-slider",
+  "version": "1.0.0",
+  "description": "Slider that allows zooming on items for more detailed info",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhink.github.io/z-slider.git"
+  },
+  "keywords": [
+    "slider"
+  ],
+  "author": "James",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jhink.github.io/z-slider/issues"
+  },
+  "homepage": "https://github.com/jhink.github.io/z-slider#readme",
+  "devDependencies": {
+    "browser-sync": "^2.11.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-concat-css": "^2.2.0",
+    "gulp-cssnano": "^2.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.1.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.1",
+    "jshint": "^2.9.1"
+  }
+}
