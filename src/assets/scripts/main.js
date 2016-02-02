@@ -73,6 +73,73 @@
 		// scale body when zooming into the items, if not Firefox (the performance in Firefox is "no good" :P )
 		bodyScale = isFirefox ? false : 3;
 
-	
+		// some helper functions
+		function scrollX() { return window.pageXOffset || docElem.scrollLeft; }
+		function scrollY() { return window.pageYOffset || docElem.scrollTop; }
+		
+		// from https://sberry.me/articles/javascript-event-throttling-amp-debouncing
+		function throttle(fn, delay) {
+			var allowSample = true;
+			
+			return function(e) {
+				if ( allowSample ) {
+					allowSample = false;
+					setTimeout(function() { allowSample = true; }, delay);
+					fn(e);
+				}
+			};
+		}
+
+		function init() {
+			initEvents();
+		}
+
+		// event binding
+		function initEvents() {
+			
+			// open items
+			zoomCtrl.addEventListener('click', function() {
+				openItem(items[current]);
+			});
+			
+			// close content
+			closeContentCtrl.addEventListener('click', closeContent);
+
+			// navigation
+			navRightCtrl.addEventListener('click', function() { navigate('right'); });
+			navLeftLeftCtrl.addEventListener('click', function() { navigate('left'); });
+
+			// window resize
+			window.addEventListener('resize', throttle(function(ev) {
+				// reset window sizes
+				win = { width: window.innerWidth, height: window.innerHeight };
+
+				// reset transforms for the items (slider items)
+				items.forEach( function(item, pos) {
+					if( pos === current ) return;
+					var el = item.querySelector('.slide__mover');
+					dynamics.css(el, {translateX: el.offsetWidth});
+				});
+			}, 10));
+			
+			// keyboard navigation items
+			document.addEventListener( 'keydown', function( ev ) {
+				if( isOpen ) return;
+				var keyCode = ev.keyCode || ev.which;
+
+				switch (keyCode) {
+					case 37:
+						navigate('left');
+						break;
+					case 39:
+						navigate('right');
+						break;
+				}
+			} );
+		}
+		// END initEvents()
+
+		
+
 }) (window); 
 
