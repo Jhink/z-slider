@@ -107,7 +107,7 @@
 
 			// navigation
 			navRightCtrl.addEventListener('click', function() { navigate('right'); });
-			navLeftLeftCtrl.addEventListener('click', function() { navigate('left'); });
+			navLeftCtrl.addEventListener('click', function() { navigate('left'); });
 
 			// window resize
 			window.addEventListener('resize', throttle(function(ev) {
@@ -197,6 +197,64 @@
 			scrollContainer.scrollLeft = xscroll;
 		}
 		// END noscroll()
+		
+		// closes the item/content
+		function closeContent() {
+			var contentItem = contentEl.querySelector('.content__item--current'),
+				zoomer      = items[current].querySelector('.zoomer'); 
+			
+			classie.remove(contentEl, 'content--open');
+			classie.remove(contentItem, 'content__item--current');
+			classie.remove(bodyEl, 'noscroll');
+
+			if( bodyScale ) {
+				// reset fix for safari (allowing fixed children to keep position)
+				bodyEl.style.WebkitTransform = '';
+				bodyEl.style.transform = '';
+			}
+
+			/* fix or safari flickering */
+			var nobodyscale = true;
+			applyTransforms(zoomer, nobodyscale);
+			/* end fix */
+
+			// wait for the inner content to finish the transition
+			onEndTransition(contentItem, function(ev) {
+				classie.remove(this, 'content__item--reset');
+
+				// reset scrolling permission
+				lockScroll = false;
+				scrollContainer.removeEventListener('scroll', noscroll);
+
+				/* fix for safari flickering */
+					zoomer.style.WebkitTransform = 'translate3d(0,0,0) scale3d(1,1,1)';
+					zoomer.style.transform = 'translate3d(0,0,0) scale3d(1,1,1)';
+				/* end fix */
+
+				// scale up - behind the scenes - the item again(without transition)
+				applyTransforms(zoomer);
+
+				// animate/scale down the item
+				setTimeout(function() {
+					classie.remove(zoomer, 'zoomer--notrans');
+					classie.remove(zoomer, 'zoomer--active');
+					zoomer.style.WebkitTransform = 'translate3d(0, 0, 0) scale3d(1,1,1)';
+					zoomer.style.transform = 'translate3d(0,0,0) scale3d(1,1,1)';	
+				}, 25);
+
+				if( bodyScale ) {
+					dynamics.css(bodyEl, {scale: bodyScale});
+					dynamics.animate(bodyEl, {scale: 1}, {
+						type: dynamics.easeInOut,
+						duration: 500
+					});
+				}
+
+				isOpen = false;
+			});
+
+		}
+		// END closeContent()
 
 		// applies the necessary transform value to scale the item up
 		function applyTransforms(el, nobodyscale) {
