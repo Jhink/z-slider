@@ -21,14 +21,14 @@ var config = {
         styles  : './src/assets/styles/**/*.{sass,scss}',
         scripts : './src/assets/scripts/*.js',
         images  : './src/assets/images/**/*.*',
-        vendor  : './src/assets/vendor/**/*'
+        fonts  : './src/assets/fonts/**/*'
     },
     dest : {
         html   : './dest/',
         css    : './dest/assets/css/',
         js     : './dest/assets/js/',
         img    : './dest/assets/img/',
-        vendor : './dest/assets/vendor/',
+        fonts : './dest/assets/fonts/',
         maps   : './dest/assets/css/maps/'
     }
 };
@@ -67,11 +67,10 @@ gulp.task( 'images', function() {
         .pipe( gulp.dest( config.dest.img ) );
 });
 
-gulp.task( 'vendor', function() {
-    gulp.src( config.src.vendor )
-        .pipe( gulp.dest(config.dest.vendor) );
+gulp.task( 'fonts', function() {
+    gulp.src( config.src.fonts )
+        .pipe( gulp.dest(config.dest.fonts) );
 });
-
 
 gulp.task('serve', ['styles', 'html', 'scripts'], function() {
 
@@ -102,4 +101,4 @@ gulp.task('watch', function() {
   gulp.watch([gulp.src.html], ['html']);
 });
 
-gulp.task('default', ['html', 'scripts', 'styles', 'images', 'serve']);
+gulp.task('default', ['html', 'scripts', 'styles', 'images', 'fonts', 'serve']);
