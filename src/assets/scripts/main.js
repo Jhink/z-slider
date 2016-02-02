@@ -139,7 +139,64 @@
 		}
 		// END initEvents()
 
-		
+		// opens one item
+		function openItem(item) {
+			if( isOpen ) return;
+			isOpen = true;
 
+			// the element that will be transformed
+			var zoomer = item.querySelector('.zoomer');
+			
+			// slide screen preview
+			classie.add(zoomer, 'zoomer--active');
+			
+			// disallow scroll
+			scrollContainer.addEventListener('scroll', noscroll);
+
+			// apply transforms
+			applyTransforms(zoomer);
+
+			// also scale the body so it looks the camera moves to the item
+			if( bodyScale ) {
+				dynamics.animate(bodyEl, { scale: bodyScale }, { type: dynamics.easeInOut, duration: 500});
+			}
+
+			// after the transition is finished:
+			onEndTransition(zoomer, function() {
+				// reset body transform
+				if( bodyScale ) {
+					dynamics.stop(bodyEl);
+					dynamics.css(bodyEl, { scale: 1 });
+
+					// fix for safari(allowing fixed children to keep position)
+					bodyEl.style.WebkitTransform = 'none';
+					bodyEl.style.transform = 'none';
+				}
+				// no scrolling
+				classie.add(bodyEl, 'noscroll');
+				classie.add(contentEl, 'content--open');
+				var contentItem = document.getElementById(item.getAttribute('data-content'));
+				classie.add(contentItem, 'content__item--current');
+				classie.add(contentItem, 'content__item--reset');
+
+				// reset zoomer transform - back to its original position/transform without a transition
+				classie.add(zoomer, 'zoomer--notrans');
+				zoomer.style.WebkitTransform = 'translate3d(0,0,0) scale3d(1,1,1)';
+				zoomer.style.transform = 'translate3d(0,0,0) scale3d(1,1,1)';
+			});
+		}
+
+		// disallow scrolling (on the scrollContainer)
+		function noscroll() {
+			if(!lockScroll) {
+				lockScroll = true;
+				xscroll = scrollContainer.scrollLeft;
+				yscroll = scrollContainer.scrollTop;
+			}
+			scrollContainer.scrollTop = yscroll;
+			scrollContainer.scrollLeft = xscroll;
+		}
+
+		init();
 }) (window); 
 
